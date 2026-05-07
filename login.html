@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - EduSmart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="bg-gray-300 dark:bg-[#0f172a] flex items-center justify-center min-h-screen p-6 transition-colors duration-500">
+    <div class="bg-white dark:bg-slate-800 p-10 rounded-[2.5rem] shadow-2xl border border-slate-200 dark:border-slate-700 w-full max-w-md text-center">
+        
+        <h2 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight italic">Edu<span class="text-blue-600">Smart</span></h2>
+        <p class="text-slate-400 dark:text-slate-500 mt-2 mb-10 font-bold uppercase text-xs tracking-[0.2em]">Learning Management System</p>
+
+        <div class="space-y-5 text-left">
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Username</label>
+                <input id="username" type="text" placeholder="admin" class="w-full px-6 py-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 outline-none transition-all dark:text-white font-bold text-sm">
+            </div>
+            
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Password</label>
+                <input id="password" type="password" placeholder="••••••••" class="w-full px-6 py-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 outline-none transition-all dark:text-white font-bold text-sm">
+            </div>
+            
+            <button onclick="login()" class="w-full bg-blue-600 text-white font-black py-4 rounded-2xl hover:bg-blue-700 transition-all active:scale-95 shadow-xl shadow-blue-500/30 mt-4 uppercase tracking-widest text-xs">
+                Masuk ke Dashboard
+            </button>
+        </div>
+        
+        <p id="status" class="mt-8 text-xs font-black uppercase tracking-tight"></p>
+    </div>
+
+    <script>
+    async function login() {
+        const status = document.getElementById("status");
+        const user = document.getElementById("username").value;
+        const pass = document.getElementById("password").value;
+
+        if(user === "admin" && pass === "123") {
+            localStorage.setItem("user", JSON.stringify({firstName: "Admin", image: "https://ui-avatars.com/api/?name=Admin&background=2563eb&color=fff"}));
+            window.location = "index.html"; return;
+        }
+
+        try {
+            let res = await fetch("https://dummyjson.com/auth/login", {
+                method: "POST",
+                headers: {"Content-Type":"application/json"},
+                body: JSON.stringify({username: user, password: pass})
+            });
+            let data = await res.json();
+            if(data.token) {
+                localStorage.setItem("user", JSON.stringify(data));
+                window.location = "index.html";
+            } else { 
+                status.innerText = "Kredensial Salah!"; 
+                status.className="mt-8 text-xs font-black text-red-500 uppercase tracking-widest"; 
+            }
+        } catch(e) { 
+            status.innerText = "Gunakan admin/123"; 
+            status.className="mt-8 text-xs font-black text-orange-500 uppercase tracking-widest"; 
+        }
+    }
+    </script>
+</body>
+</html>
